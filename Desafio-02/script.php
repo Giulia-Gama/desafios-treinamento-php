@@ -1,71 +1,74 @@
 <?php
-$nome = $_POST["nome"];
-$email = $_POST["email"];
-$idade = $_POST["idade"];
-$aviso = ""; 
-$avisoemail;    
+$nome = $_POST['nome'];
+$email = $_POST['email'];
+$idade = $_POST['idade'];
 
+//function testeNome ($nome){
+   // if (isset($_POST['nome'])){
+     //   return true;
+   // }
+   // else 
+  //      return false;
+//}
 
-function validaNome($nome)
+function testeEmail($email)
 {
-    $testenome = False;
-
-    if (isset($_POST["nome"])) {
-        $testenome = true;
+    $validadorEmail = false;
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $validadorEmail = true;
     }
-    return $testenome;
+    return $validadorEmail;
 }
 
-function validaEmail($email, $avisoemail)
+function testeIdade($idade)
 {
-    $testeemail = false;
-    $avisoemail = " ";
-
-    if (var_dump(isset($_POST["email"]))) {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $testeemail = true;
-        } 
-    }
-    else {
-        $avisoemail = "O Email informado não é válido! <br> ";
-    }
-    return array($testeemail, $avisoemail);
-}
-function validaIdade($idade, $avisoidade)
-{
-    $testeidade = False;
-    $avisoidade = " ";
-
-    if (isset($_POST["idade"])) {
+    $validadoridade = 0; {
         if ($idade >= 18) {
-            $testeidade = true;
+            $validadoridade = true;
         } else {
-            $avisoidade = 'O Usuário é Menor de 18 anos! ou campo não preenchido <br>';
+            $validadoridade = false;
         }
     }
-    return array($testeidade, $avisoidade);
+    return $validadoridade;
 }
 
-$resultadonome = ValidaNome ($nome); 
-$listemail  = Validaemail($email, $aviso);
-$listidade  = ValidaIdade($idade, $aviso); 
-$resultadotesteemail = $listemail[0]; 
-$resultadoavisoemail = $listemail[1];
-$resultadotesteidade = $listidade[0];
-$resultadoavisoidade = $listidade[1]; 
+//$resultadoNome = testeNome($nome); 
+$resultadoEmail = testeEmail($email);
+$resultadoIdade = testeIdade($idade);
 
-if ($resultadonome == true && $resultadotesteemail == true && $resultadotesteidade == true){
-    echo "Formulário enviado com sucesso !";
 
+function resultadoMensagem($resultadoEmail, $resultadoIdade)
+{
+    if ($resultadoEmail == true && $resultadoIdade == false) {
+        $mensagem = 1;
+    }
+    if ($resultadoEmail == false && $resultadoIdade == true) {
+        $mensagem = 2;
+    }
+    if ($resultadoEmail == false && $resultadoIdade == false) {
+        $mensagem = 3;
+    }
+    if ($resultadoEmail == true && $resultadoIdade == true) {
+        $mensagem = 4;
+    }
+    return $mensagem;
 }
-else {
-   echo "Formulário incompleto ou incorreto <br>";
-   if ($resultadotesteemail == false){
-       echo ($listemail[1]);
-   }
-   if ($resultadotesteidade == false){
-    echo ($listidade[1]);
-}
 
-}
+$resposta = resultadoMensagem($resultadoEmail, $resultadoIdade);
 
+switch ($resposta) {
+
+    case 1:
+        echo "Idade abaixo dos 18 anos !";
+        break;
+    case 2:
+        echo "Email inválido!";
+        break;
+    case 3:
+        echo "Formulário preenchido incorretamente ou nenhum dos campos atende o requisito";
+        break;
+    case 4:
+        echo "Formulário enviado com Sucesso! ";
+
+        break;
+}
